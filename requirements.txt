@@ -1,0 +1,13 @@
+crewai>=0.108.0
+crewai[tools]>=0.108.0
+mdpdf
+markdown
+pdfkit
+langchain-community
+pyautogen[retrievechat]
+poppler-utils
+ipython
+streamlit
+llama_index
+pymupdf4llm
+tenacity
