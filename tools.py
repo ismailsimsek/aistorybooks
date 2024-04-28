@@ -54,8 +54,8 @@ def generate_image(image_description: str) -> str:
         print("Failed to download the image.")
         return ""
 
-    # return filepath.relative_to(os.getcwd()).as_posix()
-    return filepath.as_posix()
+    return filepath.relative_to(os.getcwd()).as_posix()
+    # return filepath.as_posix()
 
 
 @tool
