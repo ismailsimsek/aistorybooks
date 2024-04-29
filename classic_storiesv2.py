@@ -22,16 +22,16 @@ class Classics2StoryBookGenerator:
         self.writing_style = writing_style
 
         self.llm_config = {"config_list": config_list, "cache_seed": 42}
-        self.boss = autogen.UserProxyAgent(
-            name="Boss",
-            system_message="The boss who ask questions and give tasks.",
+        self.human_admin = autogen.UserProxyAgent(
+            name="Admin",
+            system_message="A human admin, who ask questions and give tasks.",
             human_input_mode="NEVER",
             max_consecutive_auto_reply=6,
             code_execution_config={"use_docker": False},  # we don't want to execute code in this case.
         )
 
-        self.boss_aid = RetrieveUserProxyAgent(
-            name="Boss_Assistant",
+        self.human_admin_aid = RetrieveUserProxyAgent(
+            name="Novel Content Retriever",
             default_auto_reply="Reply `TERMINATE` if the task is done.",
             system_message="Assistant who has extra content retrieval power for solving difficult problems.",
             description="Assistant who can retrieve content from documents.",
@@ -45,6 +45,22 @@ class Classics2StoryBookGenerator:
                 "get_or_create": True,
             },
             code_execution_config={"use_docker": False},  # we don't want to execute code in this case.
+        )
+
+        self.planner = autogen.AssistantAgent(
+            name="Planner",
+            system_message="""
+            Planner. Suggest a plan. Revise the plan based on feedback from admin and critic, until admin approval. 
+            The plan may involve multiple agents.
+                Explain the plan first. Be clear which step is performed by each agent.
+                """,
+            llm_config=self.llm_config,
+        )
+        self.critic = autogen.AssistantAgent(
+            name="Critic",
+            system_message="Critic. Double check plan, claims, summaries from other agents and provide feedback. "
+                           "Check whether the plan does whats asked and delegates tasks to all agents.",
+            llm_config=self.llm_config,
         )
 
         self.author_agent = autogen.AssistantAgent(
@@ -67,21 +83,23 @@ class Classics2StoryBookGenerator:
         )
 
         self.groupchat = autogen.GroupChat(
-            agents=[self.boss, self.boss_aid, self.translator, self.author_agent],
+            agents=[self.human_admin, self.human_admin_aid, self.translator, self.author_agent, self.critic,
+                    self.planner],
             messages=[],
             max_round=20
         )
         self.manager = autogen.GroupChatManager(groupchat=self.groupchat, llm_config=self.llm_config)
 
     def generate(self):
-        self.boss.initiate_chat(
+        chat_result = self.human_admin.initiate_chat(
             recipient=self.manager,
-            message=f'First Retrieve and create an summary of "{self.book}" from "{self.author}", detailing a title '
+            message=f'First Retrieve "{self.book}" from from document and create an summary, detailing a title '
                     f'and character descriptions and the main plot points. '
                     f'Summary size should be minimum {self.summary_size}. '
                     f'Then make the story {self.writing_style} style. '
                     f'And then translate the summary to "{self.language} language" and make it "{self.level}" level.'
         )
+        return chat_result
 
 
 if __name__ == "__main__":
@@ -91,4 +109,4 @@ if __name__ == "__main__":
                                             level="A2 Beginner",
                                             summary_size="10 Chapters, each chapter more than 100 sentences log",
                                             writing_style="Philosophical")
-    generator.generate()
+    chat_result = generator.generate()
