@@ -2,8 +2,11 @@
 
 ## Classics to Poem Generator
 
-Summarizes given classic book as a poem in given poetic style and a image. Then saves it as a markdown and pdf file.
+Transforms a classic book into a poem and saves it as markdown and PDF
 
+**Specify the poem style**: If possible, mention the specific poetic style (e.g., "Alexander Pushkin") for better clarity.
+
+    
 Output:
 
 - [poem.md](poem.md)
