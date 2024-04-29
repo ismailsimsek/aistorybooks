@@ -11,3 +11,13 @@ Output:
 
 - [poem.md](poem.md)
 - [poem.pdf](poem.pdf)
+
+
+Usage: 
+```python
+from classic_poems import Classics2PoemGenerator
+generator = Classics2PoemGenerator(book="The Karamazov Brothers",
+                                   author="Fyodor Dostoevsky",
+                                   poetic_style="Alexander Pushkin and Philosophical")
+generator.generate()
+```
