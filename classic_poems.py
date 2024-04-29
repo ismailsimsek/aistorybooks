@@ -3,7 +3,7 @@ from langchain.chat_models import ChatOpenAI
 
 from tools import *
 
-os.environ["OPENAI_API_BASE"] = Config.GROQ_OPENAI_API_BASE
+os.environ["OPENAI_API_BASE"] = Config.GROQ_OPENAI_API_BASE_URL
 os.environ["OPENAI_API_KEY"] = Config.GROQ_OPENAI_API_KEY
 
 
