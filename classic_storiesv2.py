@@ -1,4 +1,5 @@
 import autogen
+from autogen.agentchat.contrib.retrieve_assistant_agent import RetrieveAssistantAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
 import chromadb
@@ -26,24 +27,6 @@ class Classics2StoryBookGenerator:
             name="Admin",
             system_message="A human admin, who ask questions and give tasks.",
             human_input_mode="NEVER",
-            max_consecutive_auto_reply=6,
-            code_execution_config={"use_docker": False},  # we don't want to execute code in this case.
-        )
-
-        self.human_admin_aid = RetrieveUserProxyAgent(
-            name="Novel Content Retriever",
-            default_auto_reply="Reply `TERMINATE` if the task is done.",
-            system_message="Assistant who has extra content retrieval power for solving difficult problems.",
-            description="Assistant who can retrieve content from documents.",
-            human_input_mode="NEVER",
-            max_consecutive_auto_reply=5,
-            retrieve_config={
-                "task": "qa",
-                "docs_path": self.CURRENT_DIR.joinpath("books/The-Brothers-Karamazov.pdf").as_posix(),
-                "chunk_token_size": 2000,
-                "client": chromadb.PersistentClient(path=self.CURRENT_DIR.joinpath("chromadb").as_posix()),
-                "get_or_create": True,
-            },
             code_execution_config={"use_docker": False},  # we don't want to execute code in this case.
         )
 
@@ -56,6 +39,7 @@ class Classics2StoryBookGenerator:
                 """,
             llm_config=self.llm_config,
         )
+
         self.critic = autogen.AssistantAgent(
             name="Critic",
             system_message="Critic. Double check plan, claims, summaries from other agents and provide feedback. "
@@ -63,14 +47,31 @@ class Classics2StoryBookGenerator:
             llm_config=self.llm_config,
         )
 
-        self.author_agent = autogen.AssistantAgent(
+        self.library = RetrieveUserProxyAgent(
+            name="Library",
+            default_auto_reply="Reply `TERMINATE` if the task is done.",
+            system_message="Assistant who has extra content retrieval power for solving difficult problems.",
+            description="Assistant who can retrieve content from documents. "
+                        "Help `Author` to retrieve story content from the book.",
+            human_input_mode="NEVER",
+            retrieve_config={
+                "task": "qa",
+                "docs_path": self.CURRENT_DIR.joinpath("books/The-Brothers-Karamazov.pdf").as_posix(),
+                "chunk_token_size": 2000,
+                "client": chromadb.PersistentClient(path=self.CURRENT_DIR.joinpath("chromadb").as_posix()),
+                "get_or_create": True,
+            },
+            code_execution_config={"use_docker": False},  # we don't want to execute code in this case.
+        )
+
+        self.author_agent = RetrieveAssistantAgent(
             name="Author",
             llm_config=self.llm_config,
             system_message="You are an author writing stories with detailed character descriptions "
-                           "and the main plot points. "
-            #               "Reply `TERMINATE` in the end when everything is done."
-            ,
-            description="A creative author specialized in writing stories."
+                           "and the main plot points. ",
+            description="A creative author specialized in writing stories. "
+                        "Talk to `Library` to retrive content and write a story. "
+                        "Talk to `Translator` to translate the story to another language."
         )
 
         self.translator = autogen.AssistantAgent(
@@ -79,14 +80,24 @@ class Classics2StoryBookGenerator:
             system_message="You are a language translator. "
             #                "Reply `TERMINATE` in the end when everything is done."
             ,
-            description="Language translator who can translate between multiple languages."
+            description="Language translator who can translate between multiple languages. "
+                        "Talk to `Author` to translate the his story."
         )
 
+        agents = [self.human_admin, self.library, self.translator, self.author_agent, self.critic,
+                  self.planner]
+
+        graph_dict = {}
+        graph_dict[self.human_admin] = [self.author_agent]
+        graph_dict[self.author_agent] = [self.translator, self.library, self.human_admin]
+        graph_dict[self.library] = [self.author_agent]
+        graph_dict[self.translator] = []
         self.groupchat = autogen.GroupChat(
-            agents=[self.human_admin, self.human_admin_aid, self.translator, self.author_agent, self.critic,
-                    self.planner],
+            agents=agents,
             messages=[],
-            max_round=20
+            max_round=25,
+            allowed_or_disallowed_speaker_transitions=graph_dict,
+            speaker_transitions_type="allowed"
         )
         self.manager = autogen.GroupChatManager(groupchat=self.groupchat, llm_config=self.llm_config)
 
