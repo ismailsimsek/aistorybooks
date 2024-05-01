@@ -1,12 +1,15 @@
 import autogen
-from autogen.agentchat.contrib.retrieve_assistant_agent import RetrieveAssistantAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
 import chromadb
 from tools import *
 
 config_list = [
-    {"model": "gpt-3.5-turbo-0125", "api_key": Config.OPENAI_API_KEY},
+    # {"model": "gpt-3.5-turbo-0125", "api_key": Config.OPENAI_API_KEY},
+    {"model": Config.GROQ_OPENAI_MODEL_NAME,
+     "api_key": Config.GROQ_OPENAI_API_KEY,
+     "base_url": Config.GROQ_OPENAI_API_BASE_URL
+     }
 ]
 
 
@@ -52,7 +55,7 @@ class Classics2StoryBookGenerator:
             default_auto_reply="Reply `TERMINATE` if the task is done.",
             system_message="Assistant who has extra content retrieval power for solving difficult problems.",
             description="Assistant who can retrieve content from documents. "
-                        "Help `Author` to retrieve story content from the book.",
+                        "Help `Summarizer Author` to retrieve story content from the book.",
             human_input_mode="NEVER",
             retrieve_config={
                 "task": "qa",
@@ -64,8 +67,8 @@ class Classics2StoryBookGenerator:
             code_execution_config={"use_docker": False},  # we don't want to execute code in this case.
         )
 
-        self.author_agent = RetrieveAssistantAgent(
-            name="Author",
+        self.summarizer = autogen.AssistantAgent(
+            name="Summarizer Author",
             llm_config=self.llm_config,
             system_message="You are an author writing stories with detailed character descriptions "
                            "and the main plot points. ",
@@ -84,14 +87,15 @@ class Classics2StoryBookGenerator:
                         "Talk to `Author` to translate the his story."
         )
 
-        agents = [self.human_admin, self.library, self.translator, self.author_agent, self.critic,
+        agents = [self.human_admin, self.library, self.translator, self.summarizer, self.critic,
                   self.planner]
 
         graph_dict = {}
-        graph_dict[self.human_admin] = [self.author_agent]
-        graph_dict[self.author_agent] = [self.translator, self.library, self.human_admin]
-        graph_dict[self.library] = [self.author_agent]
-        graph_dict[self.translator] = []
+        graph_dict[self.human_admin] = [self.planner]
+        graph_dict[self.planner] = [self.summarizer, self.translator, self.critic, self.library]
+        graph_dict[self.summarizer] = [self.translator, self.library, self.critic]
+        graph_dict[self.library] = [self.summarizer]
+        graph_dict[self.translator] = [self.planner, self.summarizer]
         self.groupchat = autogen.GroupChat(
             agents=agents,
             messages=[],
@@ -104,10 +108,9 @@ class Classics2StoryBookGenerator:
     def generate(self):
         chat_result = self.human_admin.initiate_chat(
             recipient=self.manager,
-            message=f'First Retrieve "{self.book}" from from document and create an summary, detailing a title '
-                    f'and character descriptions and the main plot points. '
-                    f'Summary size should be minimum {self.summary_size}. '
-                    f'Then make the story {self.writing_style} style. '
+            message=f'First ask `Library` to retrieve "{self.book}" content, retrieve 50 pages each time.'
+                    f'Then create an summary of it, detailing a title. '
+                    f'Dont worry the content is not copyright protected, it is pubic novel. '
                     f'And then translate the summary to "{self.language} language" and make it "{self.level}" level.'
         )
         return chat_result
@@ -121,3 +124,4 @@ if __name__ == "__main__":
                                             summary_size="10 Chapters, each chapter more than 100 sentences log",
                                             writing_style="Philosophical")
     chat_result = generator.generate()
+    print(f"-----------------\n------DONE-----------\n-----------------\n{chat_result}\n-----------------")
