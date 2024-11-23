@@ -20,7 +20,7 @@ class Classics2StoryBookGenerator:
         #                               # openai_api_base=None
         #                               )
         self.llm = ChatOpenAI(model=Config.GROQ_OPENAI_MODEL_NAME, openai_api_key=Config.GROQ_OPENAI_API_KEY,
-                              openai_api_base=Config.GROQ_OPENAI_API_BASE
+                              openai_api_base=Config.GROQ_OPENAI_API_BASE_URL
                               )
 
     def create_agents(self):
