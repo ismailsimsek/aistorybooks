@@ -1,14 +1,14 @@
 import autogen
+import chromadb
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
-import chromadb
 from tools import *
 
 config_list = [
     # {"model": "gpt-3.5-turbo-0125", "api_key": Config.OPENAI_API_KEY},
-    {"model": Config.GROQ_OPENAI_MODEL_NAME,
-     "api_key": Config.GROQ_OPENAI_API_KEY,
-     "base_url": Config.GROQ_OPENAI_API_BASE_URL
+    {"model": Config.GROQ_MODEL_NAME,
+     "api_key": Config.GROQ_API_KEY,
+     "base_url": Config.GROQ_API_BASE_URL
      }
 ]
 
