@@ -15,9 +15,9 @@ Output:
 Usage:
 
 ```python
-from classic_stories import Classics2StoryBookGenerator
+from classic_stories import StoryBookGenerator
 
-generator = Classics2StoryBookGenerator(book="The Karamazov Brothers",
+generator = StoryBookGenerator(book="The Karamazov Brothers",
                                         author="Fyodor Dostoevsky",
                                         language="German",
                                         level="A2 Beginner",
@@ -41,8 +41,8 @@ Output:
 
 Usage: 
 ```python
-from classic_poems import Classics2PoemGenerator
-generator = Classics2PoemGenerator(book="The Karamazov Brothers",
+from classic_poems import ClassicPoemGenerator
+generator = ClassicPoemGenerator(book="The Karamazov Brothers",
                                    author="Fyodor Dostoevsky",
                                    poetic_style="Alexander Pushkin and Philosophical")
 generator.generate()
