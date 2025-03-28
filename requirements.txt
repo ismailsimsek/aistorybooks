@@ -4,6 +4,7 @@ mdpdf
 markdown
 pdfkit
 langchain-community
-pyautogen[retrievechat]l
+pyautogen[retrievechat]
 poppler-utils
 ipython
+streamlit

@@ -1,8 +1,9 @@
+from pathlib import Path
+
 import autogen
 import chromadb
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
-
-from tools import *
+from config import Config
 
 config_list = [
     # {"model": "gpt-3.5-turbo-0125", "api_key": Config.OPENAI_API_KEY},

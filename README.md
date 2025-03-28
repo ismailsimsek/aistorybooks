@@ -15,7 +15,7 @@ Output:
 Usage:
 
 ```python
-from classic_stories import StoryBookGenerator
+from agents.crewai.classic_stories import StoryBookGenerator
 
 generator = StoryBookGenerator(book="The Karamazov Brothers",
                                         author="Fyodor Dostoevsky",
@@ -41,7 +41,7 @@ Output:
 
 Usage: 
 ```python
-from classic_poems import ClassicPoemGenerator
+from agents.crewai.classic_poems import ClassicPoemGenerator
 generator = ClassicPoemGenerator(book="The Karamazov Brothers",
                                    author="Fyodor Dostoevsky",
                                    poetic_style="Alexander Pushkin and Philosophical")
