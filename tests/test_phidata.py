@@ -4,9 +4,9 @@ from pathlib import Path
 from aistorybooks.phidata.classic_stories import PhiStoryBookGenerator
 
 
+@unittest.skip("Local user test only")
 class TestPhiStoryBookGenerator(unittest.TestCase):
 
-    @unittest.skip("Local user test only")
     def test_story_book_generator(self):
         pdf_file = Path(__file__).parent.joinpath("resources/LoremIpsum.pdf")
 

@@ -1,4 +1,3 @@
-crewai>=0.108.0
 crewai[tools]>=0.108.0
 mdpdf
 markdown
@@ -11,3 +10,7 @@ streamlit
 llama_index
 pymupdf4llm
 tenacity
+llama_index
+pymupdf4llm
+phidata
+openai

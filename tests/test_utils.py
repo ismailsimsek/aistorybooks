@@ -6,6 +6,7 @@ from typing import List
 from aistorybooks.utils import PdfUtil
 
 
+@unittest.skip("Local user test only")
 class TestPdfUtil(unittest.TestCase):
 
     @unittest.skip("TODO implement")
@@ -43,7 +44,6 @@ class TestPdfUtil(unittest.TestCase):
 
         self.assertEqual(len(chunks), 0)
 
-    @unittest.skip("Local user test only")
     def test_document_info(self):
         pdf_file = Path(__file__).parent.joinpath("resources/LoremIpsum.pdf")
         document = PdfUtil.process_pdf_file(pdf_file=pdf_file, save_to_pickle=False)

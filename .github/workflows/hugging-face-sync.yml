@@ -1,0 +1,51 @@
+name: Sync to Hugging Face Spaces
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Remove bad files
+        run: rm -rf poem.pdf images/*png tests/resources/LoremIpsum.pdf
+
+      - name: Sync to Hugging Face Spaces
+        uses: JacobLinCool/huggingface-sync@v1
+        with:
+          github: ${{ secrets.GITHUB_TOKEN }}
+          user: ismailsimsek # Hugging Face username or organization name
+          space: aistorybooks # Hugging Face space name
+          token: ${{ secrets.HF_TOKEN }} # Hugging Face token
+          ###################################
+          emoji: 📖
+          # Color for Thumbnail gradient (red, yellow, green, blue, indigo, purple, pink, gray).
+          colorFrom: blue
+          colorTo: green
+          # Can be either gradio, streamlit, docker, or static.
+          sdk: streamlit
+          # Any valid Python 3.x or 3.x.x version.
+#            python_version: # optional
+#            # Specify the version of the selected SDK (Streamlit or Gradio). All versions of Gradio are supported. Streamlit versions are supported from 0.79.0 to 1.19.0.
+          sdk_version: 1.44.0
+          # Path to your main application file (which contains either gradio or streamlit Python code, or static html code). Path is relative to the root of the repository.
+          app_file: app.py
+#            # Port on which your application is running. Used only if sdk is docker.
+#            app_port: # optional
+#            # For non-static spaces, initial url to render. Needs to start with /. For static spaces, use app_file instead.
+#            base_path: # optional
+#            # Whether your Space is rendered inside a full-width (when true) or fixed-width column (ie. “container” CSS) inside the iframe. Defaults to false in gradio and streamlit, and to true for other sdks.
+#            fullWidth: # optional
+#            # Whether the Space stays on top of your profile. Can be useful if you have a lot of Spaces so you and others can quickly see your best Space.
+          pinned: true
+          title: AI-Powered Storybooks
+          short_description: AI-Powered Storybook/Poem Generation for Language Learners
+          license: apache-2.0
