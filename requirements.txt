@@ -14,3 +14,4 @@ llama_index
 pymupdf4llm
 phidata
 openai
+google-generativeai
