@@ -9,7 +9,7 @@ import streamlit as st
 from llama_index.core.schema import Document
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
-from aistorybooks.phidata.classic_stories import PhiStoryBookGenerator
+from aistorybooks.phidataa.classic_stories import PhiStoryBookGenerator
 
 
 @dataclass

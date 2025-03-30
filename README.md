@@ -30,7 +30,7 @@ the provided PDF.
 * **Chunk-Based Processing:** Processes the PDF content in chunks, allowing for efficient handling
 
 ```python
-from aistorybooks.phidata.classic_stories import PhiStoryBookGenerator
+from aistorybooks.phidataa.classic_stories import PhiStoryBookGenerator
 from pathlib import Path
 
 generator = PhiStoryBookGenerator(
@@ -59,7 +59,7 @@ Example Output:
 Usage:
 
 ```python
-from aistorybooks.crewai.classic_stories import StoryBookGenerator
+from aistorybooks.crewaia.classic_stories import StoryBookGenerator
 
 generator = StoryBookGenerator(book="The Karamazov Brothers",
                                author="Fyodor Dostoevsky",
@@ -84,7 +84,7 @@ Example Output:
 Usage:
 
 ```python
-from aistorybooks.crewai.classic_poems import ClassicPoemGenerator
+from aistorybooks.crewaia.classic_poems import ClassicPoemGenerator
 
 generator = ClassicPoemGenerator(book="The Karamazov Brothers",
                                  author="Fyodor Dostoevsky",
