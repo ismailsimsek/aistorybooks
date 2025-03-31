@@ -9,6 +9,8 @@ desired proficiency level.
 
 You can interact with and use the live application directly on [Hugging Face Spaces](https://huggingface.co/spaces/ismailsimsek/aistorybooks)
 
+![](images/streamlit-app-demo.gif)
+
 ## Classics to Story Book Generators
 
 This tools simplifies classic novels into engaging storybooks. You can choose the target language, reading level,

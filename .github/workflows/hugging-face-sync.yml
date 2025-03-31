@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Remove bad files
-        run: rm -rf poem.pdf images/*png tests/resources/LoremIpsum.pdf
+        run: rm -rf poem.pdf images/*png images/*gif tests/resources/LoremIpsum.pdf
 
       - name: Sync to Hugging Face Spaces
         uses: JacobLinCool/huggingface-sync@v1
