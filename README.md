@@ -7,6 +7,8 @@ The primary focus is to assist language learners by generating storybooks and po
 For example, users can transform classic novels into storybooks adapted for language learning, customized to their
 desired proficiency level.
 
+You can interact with and use the live application directly on [Hugging Face Spaces](https://huggingface.co/spaces/ismailsimsek/aistorybooks)
+
 ## Classics to Story Book Generators
 
 This tools simplifies classic novels into engaging storybooks. You can choose the target language, reading level,

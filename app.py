@@ -1,4 +1,5 @@
 import shutil
+import statistics
 import tempfile
 import uuid
 from dataclasses import dataclass, field
@@ -127,7 +128,7 @@ def st_sidebar(inputs: AppInputs):
 def st_process_file(inputs: AppInputs) -> List[List[Document]]:
     uploaded_file_name = inputs.uploaded_file.name
     st.info(f"Uploaded File: **{inputs.uploaded_file.name}**. Preparing your storybook... (Working in the background)."
-            f"Please note: Processing is powered by the free tier of Gemini, which may experience rate limiting.",
+            f"  \nPlease note: Processing is powered by the free tier of Gemini, which may experience rate limiting.",
             icon=":material/info:")
 
     try:
@@ -171,7 +172,16 @@ def st_process_file(inputs: AppInputs) -> List[List[Document]]:
                                              icon=":material/download:",
                                              )
             info_container.empty()
-            info_container.info(f"Model:{generator.model.name}, Metrics:{generator.model.metrics}",
+            metrics = generator.model.metrics
+            avg_response_time = statistics.mean(metrics.get('response_times', [])) if metrics else 0
+            input_tokens = metrics.get('input_tokens', 0) if metrics else 0
+            output_tokens = metrics.get('output_tokens', 0) if metrics else 0
+            total_tokens = metrics.get('total_tokens', 0) if metrics else 0
+            info_container.info(f"Model: {generator.model.name} "
+                                f"  \n Avg response time: {avg_response_time} "
+                                f"  \n Input tokens: {input_tokens} "
+                                f"  \n Output tokens: {output_tokens} "
+                                f"  \n Total tokens: {total_tokens}",
                                 icon=":material/info:")
     finally:
         if temp_folder and temp_folder.exists():
