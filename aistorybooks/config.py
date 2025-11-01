@@ -21,7 +21,7 @@ class Config:
     OPENAI_API_BASE_URL = "https://api.openai.com/v1/"
     OPENAI_MODEL_NAME = "gpt-4"
     OPENAI_MODEL_GPT_4O_MINI_NAME = "gpt-4o-mini"
-    GEMINI_MODEL_NAME = "gemini-2.0-flash-lite"
+    GEMINI_MODEL_NAME = "gemini-2.5-flash"
     GROQ_API_KEY = _load_api_key("groq-api-key.txt")
     OPENAI_API_KEY = _load_api_key("openai-api-key.txt")
     LOCAL_LLM_API_KEY = _load_api_key("local-api-key.txt")

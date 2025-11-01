@@ -1,3 +1,8 @@
 *api-key.txt
 .idea
 run.sh
+.gemini
+__pycache__/
+*.pyc
+.DS_Store
+.pytest_cache/
