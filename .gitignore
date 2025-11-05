@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 .DS_Store
 .pytest_cache/
+.gemini
+tests/*.pdf
+tests/*.txt
